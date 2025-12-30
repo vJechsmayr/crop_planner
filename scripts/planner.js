@@ -1,8 +1,8 @@
 // CONSTANTS
 var SEASON_DAYS = 28;
 var YEAR_DAYS = SEASON_DAYS * 4;
-var VERSION = "2.0";
-var DATA_VERSION = "2";
+var VERSION = "3.0";
+var DATA_VERSION = "3";
 
 
 // Save/load helper functions
@@ -57,7 +57,8 @@ function planner_controller($scope){
 	
 	self.cdate;							// Current date to add plan to
 	self.cseason;						// Current season
-	self.cmode = "farm";				// Current farm mode (farm / greenhouse)
+	self.cmode = "farm";				// Current farm mode (farm / greenhouse / ginger island)
+	self.cmodeName = "Farm";
 	self.cyear;							// Current year
 	
 	self.newplan;
@@ -199,6 +200,7 @@ function planner_controller($scope){
 				// Update plans
 				update(self.years[0].data.farm, true); // Update farm
 				update(self.years[0].data.greenhouse, true); // Update greenhouse
+				update(self.years[0].data.ginger_island, true); // Update ginger island
 				
 				self.loaded = true;
 				$scope.$apply();
@@ -288,6 +290,11 @@ function planner_controller($scope){
 		
 		// If farm is null, get first farm/year
 		farm = farm || self.years[0].farm();
+
+		if(farm.greenhouse || farm.ginger_island){
+			update_multiyear_farm(farm);
+			return;
+		};
 		
 		// Update all years after this one VS just this year
 		full_update = full_update || (farm.greenhouse && farm.has_regrowing_crops());
@@ -312,8 +319,8 @@ function planner_controller($scope){
 				var season = self.seasons[Math.floor((plan.date-1)/SEASON_DAYS)];
 				var crop_end = crop.end;
 				
-				if (farm.greenhouse){
-					crop_end = YEAR_DAYS;
+				if (farm.greenhouse || farm.ginger_island){
+					crop_end = YEAR_DAYS; //Greenhouse or Ginger Island can grow all year -> only 1 year
 				}
 				
 				// Update daily costs for planting
@@ -393,6 +400,123 @@ function planner_controller($scope){
 			update(next_year, true);
 		}
 	}
+
+	// Multiyear-Update for greenhouse and ginger island
+	function update_multiyear_farm(farm){
+		var farmType = "farm";
+		if(farm.greenhouse) farmType = "greenhouse";
+		if(farm.ginger_island) farmType = "ginger_island";
+
+		// All Years that have this farm type
+		var farms = [];
+		for(var i = 0; i < self.years.length; i++){
+			var yearFarm = self.years[i].data[farmType];
+			farms.push(yearFarm);
+
+			// Reset harvests & total per year
+			yearFarm.harvests = [];
+			yearFarm.totals = {};
+			yearFarm.totals.day = {};
+			yearFarm.totals.season = [new Finance, new Finance, new Finance, new Finance];
+			yearFarm.totals.year = new Finance;
+		}
+
+		var totalYears = self.years.length;
+		var globalEnd = totalYears * YEAR_DAYS; // last day of simulated days (all years)
+
+		// iterate through all years' plans
+		for (var year_index = 0; year_index < totalYears; year_index++){
+			var farm = farms[year_index];
+
+			$.each(farm.plans, function(date, plans){
+				date = paseInt(date);
+
+				$.each(plans, function(i, plan){
+					var crop = plan.crop;
+					if(!crop) return;
+
+					var growDays = plan.get_grow_time();
+					var planting_cost = plan.get_cost();
+
+					//global Planting date all years
+					var globalPlant = (year_index * YEAR_DAYS) + date;
+					var first_harvest_global = globalPlant + growDays;
+
+					// Planting cost only on planting day/year
+					if(!farm.totals.day[date]) farm.totals.day[date] = new Finance;
+					var d_plant = farm.totals.day[date];
+					d_plant.profit.min -= planting_cost;
+					d_plant.profit.max -= planting_cost;
+
+					var season = self.seasons[Math.floor((date-1)/SEASON_DAYS)];
+					var s_plant_total = farm.totals.season[season.index];
+					s_plant_total.profit.min -= planting_cost;
+					s_plant_total.profit.max -= planting_cost;
+					s_plant_total.plantings += plan.amount;
+
+					// if first harvest is beyond simulated years, finish
+					if(first_harvest_global > globalEnd) return;
+
+					var harvests = [];
+					var hasRegrow = !!crop.regrow;
+					var globalHarvest = first_harvest_global;
+					var isFirst = true;
+
+					//All harvests within simulated years
+					while(globalHarvest <= globalEnd){
+						//Global Day -> Yearindex, Day in year
+						var targetYearIndex = Math.floor((globalHarvest -1) / YEAR_DAYS);
+						var localDay = ((globalHarvest -1) % YEAR_DAYS) +1;
+
+						var targetFarm = farms[targetYearIndex];
+						if(!targetFarm) break;
+
+						//Harvest Object with day in year
+						var harvest = new Harvest(plan, localDay, !isFirst);
+						harvests.push(harvest);
+
+						// Harvest in target farm
+						if(!targetFarm.harvests[localDay]) targetFarm.harvests[localDay] = [];
+						targetFarm.harvests[localDay].push(harvest);
+
+						// Day Profit Update
+						if(!targetFarm.totals.day[localDay]) targetFarm.totals.day[localDay] = new Finance;
+						var d_harvest = targetFarm.totals.day[localDay];
+						d_harvest.profit.min += harvest.revenue.min;
+						d_harvest.profit.max += harvest.revenue.max;
+
+						// Season Profit Update
+						var h_season = Math.floor((localDay - 1) / SEASON_DAYS);
+						var s_harvest_total = targetFarm.totals.season[h_season];
+						s_harvest_total.profit.min += harvest.revenue.min;
+						s_harvest_total.profit.max += harvest.revenue.max;
+						s_harvest_total.harvests.min += harvest.yield.min;
+						s_harvest_total.harvests.max += harvest.yield.max;
+
+						// only harvest, when no regrow
+						if(!hasRegrow) break;
+
+						// next regrow harvest
+						globalHarvest += crop.regrow;
+						isFirst = false;
+					}
+
+					// For Plan: all (multi-year) harvests
+					plan.harvests = harvests;
+				});
+			});
+		}
+
+		// Year Totals per Year from Season Totals
+		for(var y=0; y < totalYears; y++){
+			var farm = farms[y];
+			for (var i = 0; i < farm.totals.seasons; i++){
+				var season = farm.totals.seasons[i];
+				farm.totals.year.profit.min += season.profit.min;
+				farm.totals.year.profit.max += season.profit.max;
+		}
+	}
+}
 	
 	// Add self.newplan to plans list
 	function add_plan(date, auto_replant){
@@ -553,14 +677,16 @@ function planner_controller($scope){
 	
 	// Check if current farm mode is greenhouse
 	function in_greenhouse(){
-		return self.cmode == "greenhouse";
+		return self.cmode == "greenhouse" || self.cmode == "ginger_island";
 	}
 	
 	// Toggle current farm mode
 	function toggle_mode(){
 		if (self.cmode == "farm"){
 			set_mode("greenhouse");
-		} else {
+		} else if (self.cmode == "greenhouse"){
+			set_mode("ginger_island");
+		} else{
 			set_mode("farm");
 		}
 	}
@@ -568,6 +694,7 @@ function planner_controller($scope){
 	// Set current farm mode
 	function set_mode(mode){
 		self.cmode = mode;
+		self.cmodeName = mode.replace("_", " ");
 	}
 	
 	////////////////////////////////
@@ -775,6 +902,7 @@ function planner_controller($scope){
 				//planner.player.load();
 				update(planner.years[0].data.farm, true); // Update farm
 				update(planner.years[0].data.greenhouse, true); // Update greenhouse
+				update(planner.years[0].data.ginger_island, true); // Update ginger island
 				$scope.$apply();
 				alert("Successfully imported " + plan_count + " plans into " + planner.years.length + " year(s).");
 				console.log("Imported " + plan_count + " plans into " + planner.years.length + " year(s).");
@@ -793,7 +921,7 @@ function planner_controller($scope){
 			if (!plan_data){ alert("No plan data to import"); return; }
 			
 			// Create new plan data
-			var new_plans = [{"farm":{}, "greenhouse":{}}];
+			var new_plans = [{"farm":{}, "greenhouse":{}, "ginger_island":{}}];
 			$.each(plan_data, function(date, plans){
 				date = parseInt(date);
 				$.each(plans, function(i, plan){
@@ -804,7 +932,11 @@ function planner_controller($scope){
 						if (!new_plans[0].greenhouse[date]) new_plans[0].greenhouse[date] = [];
 						delete plan.greenhouse;
 						new_plans[0].greenhouse[date].push(plan);
-					} else {
+					} else if (plan.ginger_island){
+						if(!new_plans[0].ginger_island[date]) new_plans[0].ginger_island[date] = [];
+						delete plan.ginger_island;
+						new_plans[0].ginger_island[date].push(plan);
+					}else {
 						if (!new_plans[0].farm[date]) new_plans[0].farm[date] = [];
 						new_plans[0].farm[date].push(plan);
 					}
@@ -820,6 +952,7 @@ function planner_controller($scope){
 			var plan_count = load_data();
 			update(planner.years[0].data.farm, true); // Update farm
 			update(planner.years[0].data.greenhouse, true); // Update greenhouse
+			update(planner.years[0].data.ginger_island, true); // Update ginger island
 			alert("Successfully imported " + plan_count + " legacy plans into " + planner.years.length + " year(s).");
 			console.log("Imported " + plan_count + " legacy plans into " + planner.years.length + " year(s).");
 		}
@@ -1103,6 +1236,7 @@ function planner_controller($scope){
 			
 			self.data.farm = new Farm(self);
 			self.data.greenhouse = new Farm(self, true);
+			self.data.ginger_island = new Farm(self, true);
 		}
 	}
 	
@@ -1230,10 +1364,11 @@ function planner_controller($scope){
 	/****************
 		Farm class - used only within Year
 	****************/
-	function Farm(parent_year, is_greenhouse){
+	function Farm(parent_year, is_greenhouse, is_ginger_island){
 		var self = this;
 		self.year;
 		self.greenhouse = false;
+		self.ginger_island = false;
 		self.plans = {};
 		self.harvests = {};
 		self.totals = {};
@@ -1245,6 +1380,7 @@ function planner_controller($scope){
 		function init(){
 			self.year = parent_year;
 			self.greenhouse = is_greenhouse;
+			self.ginger_island = is_ginger_island;
 			
 			for (var i = 0; i < YEAR_DAYS; i++){
 				self.plans[i+1] = [];
@@ -1275,7 +1411,9 @@ function planner_controller($scope){
 	
 	// Get image representing farm type
 	Farm.prototype.get_image = function(){
-		var type = this.greenhouse ? "greenhouse" : "scarecrow";
+		var type = "scarecrow";
+		if(this.greenhouse) type = "greenhouse";
+		if(this.ginger_island) type = "ginger_island";
 		return "images/" + type + ".png";
 	};
 	
