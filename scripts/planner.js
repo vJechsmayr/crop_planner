@@ -320,7 +320,7 @@ function planner_controller($scope){
 				var crop_end = crop.end;
 				
 				if (farm.greenhouse || farm.ginger_island){
-					crop_end = YEAR_DAYS; //Greenhouse or Ginger Island can grow all year -> only 1 year
+					crop_end = YEAR_DAYS; //Greenhouse or Ginger Island can grow all year
 				}
 				
 				// Update daily costs for planting
@@ -402,10 +402,10 @@ function planner_controller($scope){
 	}
 
 	// Multiyear-Update for greenhouse and ginger island
-	function update_multiyear_farm(farm){
+	function update_multiyear_farm(sample_farm){
 		var farmType = "farm";
-		if(farm.greenhouse) farmType = "greenhouse";
-		if(farm.ginger_island) farmType = "ginger_island";
+		if(sample_farm.greenhouse) farmType = "greenhouse";
+		if(sample_farm.ginger_island) farmType = "ginger_island";
 
 		// All Years that have this farm type
 		var farms = [];
