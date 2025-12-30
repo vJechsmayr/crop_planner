@@ -782,7 +782,7 @@
 		{
 			"buy": 0,
 			"id": "carrot",
-			"index": "Carrot",
+			"index": "carrot",
 			"name": "Carrot",
 			"seasons": [
 				"spring"
@@ -797,7 +797,7 @@
 		{
 			"buy": 0,
 			"id": "rice",
-			"index": "Rice",
+			"index": "rice",
 			"name": "Rice",
 			"seasons": [
 				"spring"
@@ -813,7 +813,7 @@
 		{
 			"buy": 0,
 			"id": "summer_squash",
-			"index": "SummerSquash",
+			"index": "summer_squash",
 			"name": "Summer Squash",
 			"seasons": [
 				"summer"
@@ -831,7 +831,7 @@
 		{
 			"buy": 0,
 			"id": "broccoli",
-			"index": "Broccoli",
+			"index": "broccoli",
 			"name": "Broccoli",
 			"seasons": [
 				"fall"
@@ -847,7 +847,7 @@
 		},
 		{
 			"buy": 0,
-			"id": "Powdermelon",
+			"id": "powdermelon",
 			"index": "powdermelon",
 			"name": "Powdermelon",
 			"seasons": [
@@ -864,7 +864,7 @@
 		},
 		{
 			"buy": 0,
-			"id": "Pineapple",
+			"id": "pineapple",
 			"index": "pineapple",
 			"name": "Pineapple",
 			"regrow": 7,
@@ -882,7 +882,7 @@
 		},
 		{
 			"buy": 0,
-			"id": "Taro Root",
+			"id": "taro_root",
 			"index": "taro_root",
 			"name": "Taro Root",
 			"seasons": [
@@ -898,7 +898,7 @@
 		},
 		{
 			"buy": 0,
-			"id": "Tea Leaves",
+			"id": "tea_leaves",
 			"index": "tea_leaves",
 			"name": "Tea Leaves",
 			"seasons": [
@@ -915,7 +915,7 @@
 		},
 		{
 			"buy": 150,
-			"id": "Cactus Fruit",
+			"id": "cactus_fruit",
 			"index": "cactus_fruit",
 			"name": "Cactus Fruit",
 			"seasons": [
@@ -1032,12 +1032,32 @@
 				"name": "Alex"
 			},
 			{
+				"day": 15,
+				"name": "Desert Festival"
+			},
+			{
+				"day": 16,
+				"name": "Desert Festival"
+			},
+			{
+				"day": 17,
+				"name": "Desert Festival"
+			},
+			{
 				"day": 17,
 				"name": "Sam"
 			},
 			{
 				"day": 19,
 				"name": "Demetrius"
+			},
+			{
+				"day": 20,
+				"name": "Trout Derby"
+			},
+			{
+				"day": 21,
+				"name": "Trout Derby"
 			},
 			{
 				"day": 22,
@@ -1118,6 +1138,14 @@
 			{
 				"day": 10,
 				"name": "Sebastian"
+			},
+			{
+				"day": 12,
+				"name": "SquidFest"
+			},
+			{
+				"day": 13,
+				"name": "SquidFest"
 			},
 			{
 				"day": 14,
