@@ -718,6 +718,221 @@
 				3,
 				3
 			]
+		},
+		{
+			"buy": 0,
+			"harvest": {},
+			"id": "wild_spring",
+			"index": 495,
+			"name": "Spring Forage",
+			"seasons": [
+				"spring"
+			],
+			"sell": 30,
+			"stages": [
+				3,
+				4
+			]
+		},
+		{
+			"buy": 0,
+			"harvest": {},
+			"id": "wild_summer",
+			"index": 496,
+			"name": "Summer Forage",
+			"seasons": [
+				"summer"
+			],
+			"sell": 50,
+			"stages": [
+				3,
+				4
+			]
+		},
+		{
+			"buy": 0,
+			"harvest": {},
+			"id": "wild_fall",
+			"index": 497,
+			"name": "Fall Forage",
+			"seasons": [
+				"fall"
+			],
+			"sell": 20,
+			"stages": [
+				3,
+				4
+			]
+		},
+		{
+			"buy": 0,
+			"harvest": {},
+			"id": "wild_winter",
+			"index": 498,
+			"name": "Winter Forage",
+			"seasons": [
+				"winter"
+			],
+			"sell": 60,
+			"stages": [
+				3,
+				4
+			]
+		},
+		{
+			"buy": 0,
+			"id": "carrot",
+			"index": "Carrot",
+			"name": "Carrot",
+			"seasons": [
+				"spring"
+			],
+			"sell": 35,
+			"stages": [
+				1,
+				1,
+				1
+			]
+		},
+		{
+			"buy": 0,
+			"id": "rice",
+			"index": "Rice",
+			"name": "Rice",
+			"seasons": [
+				"spring"
+			],
+			"sell": 30,
+			"stages": [
+				1,
+				2,
+				2,
+				3
+			]
+		},
+		{
+			"buy": 0,
+			"id": "summer_squash",
+			"index": "SummerSquash",
+			"name": "Summer Squash",
+			"seasons": [
+				"summer"
+			],
+			"sell": 45,
+			"regrow": 3,
+			"stages": [
+				1,
+				1,
+				1,
+				1,
+				2
+			]
+		},
+		{
+			"buy": 0,
+			"id": "broccoli",
+			"index": "Broccoli",
+			"name": "Broccoli",
+			"seasons": [
+				"fall"
+			],
+			"sell": 70,
+			"regrow": 4,
+			"stages": [
+				2,
+				2,
+				2,
+				2
+			]
+		},
+		{
+			"buy": 0,
+			"id": "Powdermelon",
+			"index": "powdermelon",
+			"name": "Powdermelon",
+			"seasons": [
+				"winter"
+			],
+			"sell": 60,
+			"stages": [
+				1,
+				1,
+				1,
+				2,
+				2
+			]
+		},
+		{
+			"buy": 0,
+			"id": "Pineapple",
+			"index": "pineapple",
+			"name": "Pineapple",
+			"regrow": 7,
+			"seasons": [
+				"summer"
+			],
+			"sell": 300,
+			"stages": [
+				1,
+				3,
+				3,
+				4,
+				3
+			]
+		},
+		{
+			"buy": 0,
+			"id": "Taro Root",
+			"index": "taro_root",
+			"name": "Taro Root",
+			"seasons": [
+				"summer"
+			],
+			"sell": 100,
+			"stages": [
+				1,
+				2,
+				3,
+				4
+			]
+		},
+		{
+			"buy": 0,
+			"id": "Tea Leaves",
+			"index": "tea_leaves",
+			"name": "Tea Leaves",
+			"seasons": [
+				"spring",
+				"summer",
+				"fall"
+			],
+			"sell": 50,
+			"regrow": 1,
+			"stages": [
+				10,
+				10
+			]
+		},
+		{
+			"buy": 150,
+			"id": "Cactus Fruit",
+			"index": "cactus_fruit",
+			"name": "Cactus Fruit",
+			"seasons": [
+				"spring",
+				"summer",
+				"fall",
+				"winter"
+			],
+			"sell": 75,
+			"regrow": 3,
+			"stages": [
+				2,
+				2,
+				2,
+				3,
+				3
+			]
 		}
 	],
 	"fertilizer": [
