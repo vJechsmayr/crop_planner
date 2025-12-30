@@ -429,7 +429,7 @@ function planner_controller($scope){
 			var farm = farms[year_index];
 
 			$.each(farm.plans, function(date, plans){
-				date = paseInt(date);
+				date = parseInt(date);
 
 				$.each(plans, function(i, plan){
 					var crop = plan.crop;
