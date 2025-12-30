@@ -1236,7 +1236,7 @@ function planner_controller($scope){
 			
 			self.data.farm = new Farm(self);
 			self.data.greenhouse = new Farm(self, true);
-			self.data.ginger_island = new Farm(self, true);
+			self.data.ginger_island = new Farm(self, false, true);
 		}
 	}
 	
