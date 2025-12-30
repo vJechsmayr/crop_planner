@@ -781,6 +781,7 @@
 		},
 		{
 			"buy": 0,
+			"harvest": {},
 			"id": "carrot",
 			"index": "carrot",
 			"name": "Carrot",
@@ -796,6 +797,7 @@
 		},
 		{
 			"buy": 0,
+			"harvest": {},
 			"id": "rice",
 			"index": "rice",
 			"name": "Rice",
@@ -812,6 +814,7 @@
 		},
 		{
 			"buy": 0,
+			"harvest": {},
 			"id": "summer_squash",
 			"index": "summer_squash",
 			"name": "Summer Squash",
@@ -830,6 +833,7 @@
 		},
 		{
 			"buy": 0,
+			"harvest": {},
 			"id": "broccoli",
 			"index": "broccoli",
 			"name": "Broccoli",
@@ -847,6 +851,7 @@
 		},
 		{
 			"buy": 0,
+			"harvest": {},
 			"id": "powdermelon",
 			"index": "powdermelon",
 			"name": "Powdermelon",
@@ -864,6 +869,7 @@
 		},
 		{
 			"buy": 0,
+			"harvest": {},
 			"id": "pineapple",
 			"index": "pineapple",
 			"name": "Pineapple",
@@ -882,6 +888,7 @@
 		},
 		{
 			"buy": 0,
+			"harvest": {},
 			"id": "taro_root",
 			"index": "taro_root",
 			"name": "Taro Root",
@@ -898,6 +905,7 @@
 		},
 		{
 			"buy": 0,
+			"harvest": {},
 			"id": "tea_leaves",
 			"index": "tea_leaves",
 			"name": "Tea Leaves",
@@ -915,6 +923,7 @@
 		},
 		{
 			"buy": 150,
+			"harvest": {},
 			"id": "cactus_fruit",
 			"index": "cactus_fruit",
 			"name": "Cactus Fruit",
